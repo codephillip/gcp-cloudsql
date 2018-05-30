@@ -75,12 +75,48 @@ WSGI_APPLICATION = 'gcp_cloud_sql.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
+
+def isLocal():
+    try:
+        return os.environ["SERVER_NAME"] in ["localhost","127.0.0.1"]
+    except KeyError:
+        return True
+
+
+CLOUDSQL_PROJECT = 'gcdc-cloud-sql'
+CLOUDSQL_REGION = 'us-central1'
+CLOUDSQL_INSTANCE = 'cloudsql-instance'
+
+
+if isLocal():
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'gcdc_database',
+            'USER': 'admin',
+            'PASSWORD': 'password123',
+            'HOST': '35.232.3.102',
+            'PORT': '3306',
+        }
     }
-}
+else:
+    DEBUG = False
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'gcdc_database',
+            'USER': 'admin',
+            'PASSWORD': 'password123',
+            'HOST': '/cloudsql/' + CLOUDSQL_PROJECT + ":" + CLOUDSQL_REGION + ":" + CLOUDSQL_INSTANCE
+        }
+    }
 
 
 # Password validation
