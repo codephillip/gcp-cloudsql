@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1>TODO</h1>
+    {{ block.super }}
+{% endblock %}
+
+{% block content %}
+    <p>
+        Simple todo app. Using Google Compute Engine and Google Cloud Sql.
+    </p>
+    <table class="table" style="margin-bottom: 30px;">
+        <th>Task</th>
+        <th>Done</th>
+        <th>Created At</th>
+        {% for todo in todos %}
+            <tr>
+                <td>{{ todo.task }}</td>
+                <td>{{ todo.done }}</td>
+                <td>{{ todo.created_at }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <form action="{% url 'home' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="task">Task:</label>
+            <input type="text" name="task" id="task" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="dropdown">Done:</label>
+            <select name="done_dropdown" class="form-control" id="dropdown">
+                <option value="False">False</option>
+                <option value="True">True</option>
+            </select>
+        </div>
+        <br>
+        <button type="submit" class="button btn-sm btn-primary">Submit</button>
+    </form>
+
+{% endblock %}
